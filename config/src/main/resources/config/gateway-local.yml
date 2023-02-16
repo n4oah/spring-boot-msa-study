@@ -1,0 +1,17 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: book
+          uri: lb://book
+          predicates:
+            - Path=/book/**
+          filters:
+            - RewritePath=/book(?<segment>/?.*), $\{segment}
+        - id: account
+          uri: lb://account
+          predicates:
+            - Path=/account/**
+          filters:
+            - RewritePath=/account(?<segment>/?.*), $\{segment}
+            - AuthFilter

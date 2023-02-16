@@ -1,0 +1,13 @@
+server:
+  port: 8881
+spring:
+#  devtools:
+#    restart:
+#      enabled: true
+#      additional-paths: src/main/java
+  application:
+    name: book
+  profiles:
+    active: local
+  config:
+    import: optional:configserver:http://localhost:8888

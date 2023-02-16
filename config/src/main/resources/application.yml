@@ -1,0 +1,16 @@
+server:
+  port: 8888
+spring:
+  devtools:
+    restart:
+      enabled: true
+      additional-paths: src/main/java
+  application:
+    name: config-server
+  profiles:
+    active: native
+    cloud:
+      config:
+        server:
+          native:
+            search-locations: classpath:config/
