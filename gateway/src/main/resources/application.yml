@@ -1,16 +1,16 @@
-server:
-  port: 8881
 spring:
   devtools:
     restart:
       enabled: true
       additional-paths: src/main/java
   application:
-    name: book
+    name: gateway
   profiles:
     active: local
   config:
     import: optional:configserver:http://localhost:8888
+server:
+  port: 8080
 eureka:
   client:
     serviceUrl:

@@ -1,0 +1,14 @@
+version: "3.1"
+
+services:
+  postgresql-db:
+    image: postgres:latest
+    container_name: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: "root"
+      POSTGRES_PASSWORD: "root"
+    volumes:
+      - ~/workspace/spring-boot-msa-study/postgresql-data
