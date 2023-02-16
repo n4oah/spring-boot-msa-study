@@ -2,6 +2,7 @@ package com.msa.account.service;
 
 import com.msa.account.domain.Account;
 import com.msa.account.dto.SignupDto;
+import com.msa.account.exception.DuplicateUserIdException;
 import com.msa.account.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,7 +20,7 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     public void signup(SignupDto.SignupDtoReq signupDtoReq) {
         if (this.hasDuplicateAccount(signupDtoReq.getUserId())) {
-
+            throw new DuplicateUserIdException(signupDtoReq.getUserId());
         }
 
         final Account account = signupDtoReq.toEntity(this.passwordEncoder);
