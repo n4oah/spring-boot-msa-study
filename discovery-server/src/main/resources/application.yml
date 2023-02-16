@@ -4,7 +4,11 @@ spring:
   freemarker:
     template-loader-path: classpath:/templates/
     prefer-file-system-access: false
-#eureka:
-#  client:
-#    registerWithEureka: false
-#    fetchRegistry: false
+    devtools:
+      restart:
+        enabled: true
+        additional-paths: src/main/java
+  profiles:
+    active: local
+  application:
+    name: discovery
