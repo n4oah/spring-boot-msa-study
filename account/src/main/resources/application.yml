@@ -1,0 +1,17 @@
+server:
+  port: 8082
+spring:
+  devtools:
+    restart:
+      enabled: true
+      additional-paths: src/main/java
+  application:
+    name: account
+  profiles:
+    active: local
+  config:
+    import: optional:configserver:http://localhost:8888
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
