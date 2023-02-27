@@ -1,18 +1,18 @@
 package com.msa.account.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.validation.constraints.Size;
+import com.msa.account.constants.AccountRole;
+import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.ToString;
 
 @Entity()
 @ToString()
+@Getter()
 public class AccountAuthRole {
     @Id
-    @Size(max = 30, min = 30)
-    @Column(nullable = false, name = "name", length = 30)
-    private String name;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, name = "name")
+    private AccountRole name;
 
     @Override
     public boolean equals(Object o) {
