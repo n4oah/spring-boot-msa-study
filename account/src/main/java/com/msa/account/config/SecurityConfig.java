@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,7 +22,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private UserDetailsService userDetailsService;
+//    private UserDetailsService userDetailsService;
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
@@ -30,11 +31,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain apiFilterChain(HttpSecurity http, AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        final AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
-        System.out.println("AA  " + http.getSharedObjects());
-
-        System.out.println("authenticationManager  :  " + authenticationManager);
-
         http
                 .csrf().disable()
                 .authorizeHttpRequests(authorize -> authorize
@@ -45,6 +41,13 @@ public class SecurityConfig {
                 .formLogin().disable()
         ;
         return http.build();
+    }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring()
+                .requestMatchers("/swagger*/**")
+                .requestMatchers("/api-docs*/**");
     }
 
     private UsernamePasswordAuthenticationFilter getAuthenticationFilter(AuthenticationManager authenticationManager) {

@@ -1,29 +1,30 @@
 package com.msa.account.dto;
 
 import com.msa.account.domain.Account;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import jakarta.annotation.Nonnull;
+import jakarta.validation.constraints.NotEmpty;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.HashSet;
 
 public class SignupDto {
-    @RequiredArgsConstructor
-    @Getter
-    public static class SignupDtoReq {
-        private final String userId;
-        private final String password;
-        private final String name;
-
+    public record SignupDtoReq(
+            @Nonnull
+            @NotEmpty
+            String userId,
+            @NotEmpty
+            @Nonnull
+            String password,
+            @NotEmpty
+            @Nonnull
+            String name
+    ) {
         public Account toEntity(PasswordEncoder passwordEncoder) {
-            Account account =
-                    Account
-                    .builder()
-                        .userId(this.userId)
-                        .password(passwordEncoder.encode(password))
-                        .name(name).
-//                        .authorities(new HashSet<>())
-                    build();
+            Account account = Account
+                .builder()
+                    .userId(this.userId)
+                    .password(passwordEncoder.encode(password))
+                    .name(name)
+                    .build();
 
             return account;
         }

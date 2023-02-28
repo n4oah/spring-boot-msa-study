@@ -15,3 +15,12 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
+springdoc:
+  path: /swagger-ui.html
+  api-docs:
+    enabled: true
+    path: /api-docs
+  swagger-ui:
+    enabled: true
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json

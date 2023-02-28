@@ -12,7 +12,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,8 +24,8 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional
     public void signup(SignupDto.SignupDtoReq signupDtoReq) {
-        if (this.hasDuplicateAccount(signupDtoReq.getUserId())) {
-            throw new DuplicateUserIdException(signupDtoReq.getUserId());
+        if (this.hasDuplicateAccount(signupDtoReq.userId())) {
+            throw new DuplicateUserIdException(signupDtoReq.userId());
         }
 
         final Account account = signupDtoReq.toEntity(this.passwordEncoder);
