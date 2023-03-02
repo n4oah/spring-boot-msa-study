@@ -26,13 +26,13 @@ public class Account extends AbstractAuditingEntity {
     private String userId;
 
     @NotNull()
-    @Size(min=128, max=128)
-    @Column(name = "password", length = 128, nullable = false)
+    @Size(min=60, max=60)
+    @Column(name = "password", length = 60, nullable = false, columnDefinition = "CHAR(60)")
     private String password;
 
     @NotNull()
-    @Size(min = 30, max = 30)
-    @Column(name = "name", length = 30, nullable = false)
+    @Size(min = 2, max = 5)
+    @Column(name = "name", length = 10, nullable = false)
     private String name;
 
     @ManyToMany

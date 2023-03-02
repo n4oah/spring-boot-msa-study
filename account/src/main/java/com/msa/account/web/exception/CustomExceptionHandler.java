@@ -1,6 +1,9 @@
 package com.msa.account.web.exception;
 
 import com.msa.account.exception.ExceptionCode;
+import com.msa.account.exception.ParentException;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.ValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -10,12 +13,49 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class CustomExceptionHandler {
-    @ExceptionHandler({MethodArgumentNotValidException.class})
-    public ResponseEntity<WebExceptionData> validException(
-            MethodArgumentNotValidException ex) {
+//    @ExceptionHandler({MethodArgumentNotValidException.class})
+//    public ResponseEntity<WebExceptionData> validExceptionHandler(
+//            MethodArgumentNotValidException ex) {
+//
+//        WebExceptionData response = new WebExceptionData(
+//                HttpStatusCode.valueOf(HttpStatus.BAD_REQUEST.value()),
+//                ex.getMessage(),
+//                ExceptionCode.VALIDATION_ERROR
+//        );
+//
+//        return new ResponseEntity<>(response, response.status());
+//    }
 
-        WebExceptionData response = new WebExceptionData(HttpStatusCode.valueOf(HttpStatus.CONFLICT.value()), ex.getMessage(), ExceptionCode.VALIDATION_ERROR);
+    @ExceptionHandler({ValidationException.class})
+    public ResponseEntity<WebExceptionData> validExceptionHandler(
+            ValidationException ex) {
+
+        WebExceptionData response = new WebExceptionData(
+                HttpStatusCode.valueOf(HttpStatus.BAD_REQUEST.value()),
+                ex.getMessage(),
+                ExceptionCode.VALIDATION_ERROR
+        );
 
         return new ResponseEntity<>(response, response.status());
+    }
+
+    @ExceptionHandler({ParentException.class})
+    public ResponseEntity<WebExceptionData> customExceptionHandler(
+            ParentException ex) {
+
+        WebExceptionData response = new WebExceptionData(
+                HttpStatusCode.valueOf(this.getHttpStatusByExceptionCode(ex.getExceptionCode()).value()),
+                ex.getMessage(),
+                ex.getExceptionCode()
+        );
+
+        return new ResponseEntity<>(response, response.status());
+    }
+
+    private HttpStatus getHttpStatusByExceptionCode(ExceptionCode exceptionCode) {
+        return switch (exceptionCode) {
+            case DUPLICATION -> HttpStatus.CONFLICT;
+            case VALIDATION_ERROR -> HttpStatus.BAD_REQUEST;
+        };
     }
 }

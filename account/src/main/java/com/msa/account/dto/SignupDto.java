@@ -1,21 +1,21 @@
 package com.msa.account.dto;
 
 import com.msa.account.domain.Account;
-import jakarta.annotation.Nonnull;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 
 public class SignupDto {
     public record SignupDtoReq(
-            @Nonnull
+            @NotNull
             @NotEmpty
             String userId,
             @NotEmpty
-            @Nonnull
+            @NotNull
             String password,
             @NotEmpty
-            @Nonnull
+            @NotNull
             String name
     ) {
         public Account toEntity(PasswordEncoder passwordEncoder) {
