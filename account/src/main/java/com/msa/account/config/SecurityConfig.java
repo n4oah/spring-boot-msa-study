@@ -1,16 +1,25 @@
 package com.msa.account.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.msa.account.component.JwtTokenProvider;
 import com.msa.account.constants.AccountRole;
+import com.msa.account.domain.Account;
+import com.msa.account.dto.SigninDto;
+import com.msa.account.service.AccountService;
+import com.msa.account.vo.AccountJwtClaim;
+import com.msa.account.vo.UserVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,16 +27,13 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import java.util.stream.Collectors;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-//    private UserDetailsService userDetailsService;
-
-    @Bean
-    public PasswordEncoder getPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Bean
     public SecurityFilterChain apiFilterChain(HttpSecurity http, AuthenticationConfiguration authenticationConfiguration) throws Exception {
@@ -54,10 +60,27 @@ public class SecurityConfig {
         UsernamePasswordAuthenticationFilter authenticationFilter = new UsernamePasswordAuthenticationFilter(authenticationManager);
         authenticationFilter.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/signin",
                 HttpMethod.POST.name()));
-        authenticationFilter.setAuthenticationSuccessHandler(((request, response, authResult) -> {
-            final Object a = authResult.getPrincipal();
+        authenticationFilter.setUsernameParameter("userId");
+        authenticationFilter.setPasswordParameter("password");
 
-            System.out.println("a" + a);
+        authenticationFilter.setAuthenticationSuccessHandler(((request, response, authResult) -> {
+            final UserVo user = (UserVo) authResult.getPrincipal();
+
+            String jwtToken = this.jwtTokenProvider.createToken(
+                    new AccountJwtClaim(
+                            user.getUsername(),
+                            user.getName(),
+                            user.getAuthorities().stream().map(role -> AccountRole.valueOf(role.getAuthority())).collect(Collectors.toUnmodifiableSet())
+                    )
+            );
+
+            final ObjectMapper objectMapper = new ObjectMapper();
+            final SigninDto.SigninDtoRes responseData = new SigninDto.SigninDtoRes(jwtToken);
+
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.setStatus(HttpStatus.OK.value());
+            response.setCharacterEncoding("utf-8");
+            response.getWriter().write(objectMapper.writeValueAsString(responseData));
         }));
 
         return authenticationFilter;

@@ -4,6 +4,7 @@ import com.msa.account.domain.Account;
 import com.msa.account.dto.SignupDto;
 import com.msa.account.exception.DuplicateUserIdException;
 import com.msa.account.repository.AccountRepository;
+import com.msa.account.vo.UserVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -40,13 +41,15 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
+    @Transactional(readOnly = true)
+    public UserVo loadUserByUsername(String id) throws UsernameNotFoundException {
         Account account = this.accountRepository.findByUserId(id).orElseThrow(() -> new UsernameNotFoundException(id));
 
-        return new User(
+        return new UserVo(
                 account.getUserId(),
                 account.getPassword(),
-                account.getAuthorities().stream().map(a -> a.getName()).collect(Collectors.toList())
+                account.getAuthorities().stream().map(a -> a.getName()).collect(Collectors.toList()),
+                account.getName()
         );
     }
 }
