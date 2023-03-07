@@ -1,5 +1,5 @@
 jwt:
-  secretKey: ${JWT_SECRET_KEY:ASDFO123012u4uaA}
+  secretKey: ${JWT_SECRET_KEY:asoidfjaosidfjoij2134io1iqjoiasj}
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/account
