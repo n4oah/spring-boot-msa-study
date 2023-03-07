@@ -2,9 +2,9 @@ INSERT INTO account_auth_role (name) VALUES ('USER');
 INSERT INTO account_auth_role (name) VALUES ('ADMIN');
 
 INSERT INTO account (
-    id, created_date, updated_at, name, password, user_id
+    id, created_date, updated_at, name, password, email
 ) VALUES (
-  1, '2023-03-02 15:29:43.990386 +00:00', '2023-03-02 15:29:43.990386 +00:00', '김호진', '$2a$10$qXg02iKGG3PHQwWExlEfOe3NbhJ92GZkdh6PlyR2loOgpys.5wLQ6', 'n4oahdev'
+  1, '2023-03-02 15:29:43.990386 +00:00', '2023-03-02 15:29:43.990386 +00:00', '김호진', '$2a$10$qXg02iKGG3PHQwWExlEfOe3NbhJ92GZkdh6PlyR2loOgpys.5wLQ6', 'n4oahdev@gmail.com'
 );
 INSERT INTO account_auth (
     account_id,

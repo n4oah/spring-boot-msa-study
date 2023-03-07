@@ -6,8 +6,6 @@ import com.msa.account.exception.DuplicateUserIdException;
 import com.msa.account.repository.AccountRepository;
 import com.msa.account.vo.UserVo;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,8 +23,8 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional
     public void signup(SignupDto.SignupDtoReq signupDtoReq) {
-        if (this.hasDuplicateAccount(signupDtoReq.userId())) {
-            throw new DuplicateUserIdException(signupDtoReq.userId());
+        if (this.hasDuplicateAccount(signupDtoReq.email())) {
+            throw new DuplicateUserIdException(signupDtoReq.email());
         }
 
         final Account account = signupDtoReq.toEntity(this.passwordEncoder);
@@ -36,17 +34,17 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean hasDuplicateAccount(String userId) {
-        return this.accountRepository.findByUserId(userId).isPresent();
+    public boolean hasDuplicateAccount(String email) {
+        return this.accountRepository.findByEmail(email).isPresent();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public UserVo loadUserByUsername(String id) throws UsernameNotFoundException {
-        Account account = this.accountRepository.findByUserId(id).orElseThrow(() -> new UsernameNotFoundException(id));
+    public UserVo loadUserByUsername(String email) throws UsernameNotFoundException {
+        Account account = this.accountRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
 
         return new UserVo(
-                account.getUserId(),
+                account.getEmail(),
                 account.getPassword(),
                 account.getAuthorities().stream().map(a -> a.getName()).collect(Collectors.toList()),
                 account.getName()

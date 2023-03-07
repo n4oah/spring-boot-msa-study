@@ -1,6 +1,7 @@
 package com.msa.account.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -22,8 +23,9 @@ public class Account extends AbstractAuditingEntity {
 
     @NotNull()
     @Size(min=4, max=50)
-    @Column(name = "user_id", length = 50, nullable = false, unique = true)
-    private String userId;
+    @Email()
+    @Column(name = "email", length = 50, nullable = false, unique = true)
+    private String email;
 
     @NotNull()
     @Size(min=60, max=60)

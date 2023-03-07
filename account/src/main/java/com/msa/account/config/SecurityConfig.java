@@ -54,7 +54,7 @@ public class SecurityConfig {
         UsernamePasswordAuthenticationFilter authenticationFilter = new UsernamePasswordAuthenticationFilter(authenticationManager);
         authenticationFilter.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/signin",
                 HttpMethod.POST.name()));
-        authenticationFilter.setUsernameParameter("userId");
+        authenticationFilter.setUsernameParameter("email");
         authenticationFilter.setPasswordParameter("password");
 
         authenticationFilter.setAuthenticationSuccessHandler(((request, response, authResult) -> {
