@@ -1,9 +1,12 @@
 package com.msa.account.service;
 
+import com.msa.account.component.JwtTokenProvider;
 import com.msa.account.domain.Account;
+import com.msa.account.dto.AuthJwtDecodeDto;
 import com.msa.account.dto.SignupDto;
 import com.msa.account.exception.DuplicateUserIdException;
 import com.msa.account.repository.AccountRepository;
+import com.msa.account.vo.AccountJwtClaim;
 import com.msa.account.vo.UserVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,6 +21,7 @@ import java.util.stream.Collectors;
 public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
 
     @Override
@@ -44,10 +48,23 @@ public class AccountServiceImpl implements AccountService {
         Account account = this.accountRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
 
         return new UserVo(
+                account.getId(),
                 account.getEmail(),
                 account.getPassword(),
-                account.getAuthorities().stream().map(a -> a.getName()).collect(Collectors.toList()),
-                account.getName()
+                account.getName(),
+                account.getAuthorities().stream().map(a -> a.getName()).collect(Collectors.toUnmodifiableSet())
+        );
+    }
+
+    @Override
+    public AuthJwtDecodeDto.AuthJwtDecodeResDto jwtDecode(String accessToken) {
+        final AccountJwtClaim account = this.jwtTokenProvider.decodeJwt(accessToken);
+
+        return new AuthJwtDecodeDto.AuthJwtDecodeResDto(
+                account.id(),
+                account.email(),
+                account.name(),
+                account.roles().stream().toList()
         );
     }
 }

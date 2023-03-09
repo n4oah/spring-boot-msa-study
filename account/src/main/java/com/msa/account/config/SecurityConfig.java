@@ -34,11 +34,10 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/signin").permitAll()
-                        .requestMatchers("/signup").permitAll()
-                        .anyRequest().hasRole(AccountRole.USER.getRole()))
+                        .requestMatchers("/**").permitAll())
                 .addFilter(this.getAuthenticationFilter(this.authenticationManager(authenticationConfiguration)))
                 .formLogin().disable()
+                .sessionManagement().disable()
         ;
         return http.build();
     }
@@ -57,11 +56,14 @@ public class SecurityConfig {
         authenticationFilter.setUsernameParameter("email");
         authenticationFilter.setPasswordParameter("password");
 
+        System.out.println("HIHI");
+
         authenticationFilter.setAuthenticationSuccessHandler(((request, response, authResult) -> {
             final UserVo user = (UserVo) authResult.getPrincipal();
 
             String jwtToken = this.jwtTokenProvider.createToken(
                     new AccountJwtClaim(
+                            user.getId(),
                             user.getUsername(),
                             user.getName(),
                             user.getAuthorities().stream().map(role -> AccountRole.valueOf(role.getAuthority())).collect(Collectors.toUnmodifiableSet())

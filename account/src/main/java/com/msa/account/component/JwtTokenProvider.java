@@ -1,7 +1,12 @@
 package com.msa.account.component;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.msa.account.vo.AccountJwtClaim;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -11,13 +16,12 @@ import java.security.Key;
 import java.util.Date;
 
 @Component
+@Slf4j
 public class JwtTokenProvider {
     private final Key secretKey;
 
     @Autowired
     public JwtTokenProvider(@Value("${jwt.secretKey}") String secretKey) {
-        System.out.println("secretKey" + secretKey);
-
         this.secretKey = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
@@ -33,5 +37,18 @@ public class JwtTokenProvider {
 
     public String createToken(IJwtClaim jwtClaim) {
         return this.createToken(jwtClaim, 3600000);
+    }
+
+    public AccountJwtClaim decodeJwt(String jwtToken) {
+        final ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        final Claims claims =  Jwts.parserBuilder()
+                .setSigningKey(this.secretKey)
+                .build()
+                .parseClaimsJws(jwtToken)
+                .getBody();
+
+        return objectMapper.convertValue(claims, AccountJwtClaim.class);
     }
 }
