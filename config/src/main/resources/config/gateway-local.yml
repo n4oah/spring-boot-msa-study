@@ -8,6 +8,13 @@ spring:
             - Path=/book/**
           filters:
             - RewritePath=/book(?<segment>/?.*), $\{segment}
+            - AuthFilter
+        - id: account-not-auth
+          uri: lb://account
+          predicates:
+            - Path=/account/signin
+          filters:
+            - RewritePath=/account(?<segment>/?.*), $\{segment}
         - id: account
           uri: lb://account
           predicates:
