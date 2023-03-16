@@ -56,8 +56,6 @@ public class SecurityConfig {
         authenticationFilter.setUsernameParameter("email");
         authenticationFilter.setPasswordParameter("password");
 
-        System.out.println("HIHI");
-
         authenticationFilter.setAuthenticationSuccessHandler(((request, response, authResult) -> {
             final UserVo user = (UserVo) authResult.getPrincipal();
 

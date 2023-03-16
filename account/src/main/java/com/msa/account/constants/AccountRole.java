@@ -3,8 +3,8 @@ package com.msa.account.constants;
 import org.springframework.security.core.GrantedAuthority;
 
 public enum AccountRole implements GrantedAuthority {
-    USER("USER"),
-    ADMIN("ADMIN");
+    User("User"),
+    Admin("Admin");
 
     private final String role;
 

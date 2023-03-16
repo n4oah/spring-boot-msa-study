@@ -1,5 +1,5 @@
-INSERT INTO account_auth_role (name) VALUES ('USER');
-INSERT INTO account_auth_role (name) VALUES ('ADMIN');
+INSERT INTO account_auth_role (name) VALUES ('User');
+INSERT INTO account_auth_role (name) VALUES ('Admin');
 
 INSERT INTO account (
     id, created_date, updated_at, name, password, email
