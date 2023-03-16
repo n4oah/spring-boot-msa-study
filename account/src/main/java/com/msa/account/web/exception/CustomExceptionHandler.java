@@ -2,6 +2,7 @@ package com.msa.account.web.exception;
 
 import com.msa.account.exception.ExceptionCode;
 import com.msa.account.exception.ParentException;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.ValidationException;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,19 @@ public class CustomExceptionHandler {
         return new ResponseEntity<>(response, response.status());
     }
 
+    @ExceptionHandler({ExpiredJwtException.class})
+    public ResponseEntity<WebExceptionData> validExceptionHandler(
+            ExpiredJwtException ex) {
+
+        WebExceptionData response = new WebExceptionData(
+                HttpStatusCode.valueOf(this.getHttpStatusByExceptionCode(ExceptionCode.EXPIRED_JWT).value()),
+            "AccessToken 이 만료 되었습니다.",
+                ExceptionCode.EXPIRED_JWT
+        );
+
+        return new ResponseEntity<>(response, response.status());
+    }
+
     @ExceptionHandler({ParentException.class})
     public ResponseEntity<WebExceptionData> customExceptionHandler(
             ParentException ex) {
@@ -56,6 +70,7 @@ public class CustomExceptionHandler {
         return switch (exceptionCode) {
             case DUPLICATION -> HttpStatus.CONFLICT;
             case VALIDATION_ERROR -> HttpStatus.BAD_REQUEST;
+            case EXPIRED_JWT ->  HttpStatus.UNAUTHORIZED;
         };
     }
 }
