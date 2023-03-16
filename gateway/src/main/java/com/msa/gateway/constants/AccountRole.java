@@ -1,7 +1,7 @@
 package com.msa.gateway.constants;
 public enum AccountRole  {
-    USER("USER"),
-    ADMIN("ADMIN");
+    User("User"),
+    Admin("Admin");
 
     private final String role;
 
