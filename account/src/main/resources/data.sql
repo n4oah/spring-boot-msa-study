@@ -11,5 +11,5 @@ INSERT INTO account_auth (
     role_name
 ) VALUES (
     1,
-    'USER'
+    'User'
 );
