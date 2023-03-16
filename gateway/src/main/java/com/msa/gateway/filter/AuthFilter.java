@@ -5,6 +5,7 @@ import com.msa.gateway.adaptor.account.dto.AccountAuthJwtDecodeDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -12,7 +13,10 @@ import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+
+import java.nio.charset.StandardCharsets;
 
 @Component
 public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> {
@@ -29,14 +33,10 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
             ServerHttpRequest request = exchange.getRequest();
             ServerHttpResponse response = exchange.getResponse();
 
-            System.out.println("pre" + request.getHeaders());
-
             if(!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                 response.setStatusCode(HttpStatus.UNAUTHORIZED);
                 return response.setComplete();
             }
-
-            System.out.println("aa");
 
             final String authorization = request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
 
@@ -49,10 +49,19 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
             return
                     this.accountServiceClient.authJwtDecodeToAccount(new AccountAuthJwtDecodeDto.AccountAuthJwtDecodeReqDto(accessToken))
                             .map((accountAuthJwtDecodeResDto -> {
-                                System.out.println("accountAuthJwtDecodeResDto" + accountAuthJwtDecodeResDto);
-                                return accountAuthJwtDecodeResDto;
+                                exchange.getRequest()
+                                        .mutate()
+                                        .header("X-auth-member-id", String.valueOf(accountAuthJwtDecodeResDto.id()));
+                                return exchange;
                             }))
-                            .doOnSuccess((res) -> chain.filter(exchange)).then();
+                            .flatMap(chain::filter)
+                            .onErrorResume(WebClientResponseException.class, ((tt) -> {
+                                byte[] bytes = tt.getResponseBodyAsByteArray();
+                                exchange.getResponse().getHeaders().add("content-type", "application/json");
+                                DataBuffer buffer = exchange.getResponse().bufferFactory().wrap(bytes);
+                                exchange.getResponse().setStatusCode(tt.getStatusCode());
+                                return exchange.getResponse().writeWith(Mono.just(buffer));
+                            }));
         });
     }
 
