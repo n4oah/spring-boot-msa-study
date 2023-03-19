@@ -1,10 +1,9 @@
 package com.msa.book.constants;
 
 public enum BookClassification {
-    Arts("Arts"),
-    Children("Children"),
     Travel("Travel"),
-    Programming("Programming");
+    Programming("Programming"),
+    Hobby("Hobby");
 
     private final String type;
 

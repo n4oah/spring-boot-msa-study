@@ -2,9 +2,6 @@ package com.msa.book.domain;
 
 import com.msa.book.constants.BookClassification;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -13,6 +10,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Book extends AbstractAuditingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,4 +37,18 @@ public class Book extends AbstractAuditingEntity {
 
     @OneToMany(mappedBy = "book")
     private List<InStockBook> inStockBooks = new ArrayList<>();
+
+    public Book(String title,
+        String author,
+        String description,
+        String publisher,
+        LocalDate publicationDate,
+        BookClassification classification) {
+        this.author = author;
+        this.title = title;
+        this.description = description;
+        this.publicationDate = publicationDate;
+        this.publisher = publisher;
+        this.classification = classification;
+    }
 }
