@@ -1,6 +1,7 @@
 package com.msa.book.domain;
 
 import com.msa.book.constants.BookClassification;
+import com.msa.book.constants.BookLibraryLocation;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,9 +35,6 @@ public class Book extends AbstractAuditingEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "classification", nullable = false)
     private BookClassification classification;
-
-    @OneToMany(mappedBy = "book")
-    private List<InStockBook> inStockBooks = new ArrayList<>();
 
     public Book(String title,
         String author,

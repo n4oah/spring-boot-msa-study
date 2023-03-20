@@ -2,7 +2,6 @@ package com.msa.gateway.filter;
 
 import com.msa.gateway.adaptor.account.AccountServiceClient;
 import com.msa.gateway.adaptor.account.dto.AccountAuthJwtDecodeDto;
-import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -16,13 +15,11 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
-import java.nio.charset.StandardCharsets;
-
 @Component
-public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> {
+public class AuthFilterGatewayFilterFactory extends AbstractGatewayFilterFactory<AuthFilterGatewayFilterFactory.Config> {
     private final AccountServiceClient accountServiceClient;
 
-    public AuthFilter(AccountServiceClient accountServiceClient) {
+    public AuthFilterGatewayFilterFactory(AccountServiceClient accountServiceClient) {
         super(Config.class);
         this.accountServiceClient = accountServiceClient;
     }

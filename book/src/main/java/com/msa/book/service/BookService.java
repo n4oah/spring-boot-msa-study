@@ -2,6 +2,8 @@ package com.msa.book.service;
 
 import com.msa.book.domain.Book;
 import com.msa.book.dto.CreateBookDto;
+import com.msa.book.dto.GetBookDetailDto;
+import com.msa.book.exception.NotFoundBookException;
 import com.msa.book.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,5 +26,18 @@ public class BookService {
         );
 
         this.bookRepository.save(book);
+    }
+
+    public GetBookDetailDto.GetBookDetailResDto getBookDetail(Long bookId) {
+        GetBookDetailDto.GetBookDetailResDto getBookDetailResDto =
+                GetBookDetailDto.GetBookDetailResDto.fromEntity(this.bookRepository.findById(bookId).orElseThrow(() -> new NotFoundBookException()));
+
+        return getBookDetailResDto;
+    }
+
+    public void existsBookOrError(Long bookId) {
+        if (!this.bookRepository.existsById(bookId)) {
+            throw new NotFoundBookException();
+        }
     }
 }

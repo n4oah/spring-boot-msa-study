@@ -6,9 +6,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 
 @Entity()
-@Table(name = "in_stock_book")
+@Table(name = "stock_book")
 @Getter
-public class InStockBook extends AbstractAuditingEntity {
+public class StockBook extends AbstractAuditingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,7 +21,15 @@ public class InStockBook extends AbstractAuditingEntity {
     @Column(name = "status", nullable = false)
     private BookStatus status;
 
-    @ManyToOne(cascade = {CascadeType.REMOVE})
-    @JoinColumn(name = "book_id")
-    private Book book;
+    @Column(name = "book_id", nullable = false)
+    private Long bookId;
+
+    protected StockBook() {
+    }
+
+    public StockBook(Long bookId, BookLibraryLocation libraryLocation, BookStatus status) {
+        this.bookId = bookId;
+        this.libraryLocation = libraryLocation;
+        this.status = status;
+    }
 }
