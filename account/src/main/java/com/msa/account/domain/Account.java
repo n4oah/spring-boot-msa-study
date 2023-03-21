@@ -33,8 +33,8 @@ public class Account extends AbstractAuditingEntity {
     private String password;
 
     @NotNull()
-    @Size(min = 2, max = 5)
-    @Column(name = "name", length = 10, nullable = false)
+    @Size(min = 2, max = 10)
+    @Column(name = "name", length = 20, nullable = false)
     private String name;
 
     @ManyToMany

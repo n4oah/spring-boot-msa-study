@@ -4,8 +4,10 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.msa.account.vo.AccountJwtClaim;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,7 +38,8 @@ public class JwtTokenProvider {
     }
 
     public String createToken(IJwtClaim jwtClaim) {
-        return this.createToken(jwtClaim, 3600000);
+//        3600000
+        return this.createToken(jwtClaim, 360000000);
     }
 
     public AccountJwtClaim decodeJwt(String jwtToken) {

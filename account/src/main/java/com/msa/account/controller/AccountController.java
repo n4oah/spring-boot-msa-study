@@ -31,6 +31,9 @@ public class AccountController {
     )
     public void signin(@Valid() @RequestBody(required = true) final SigninDto.SigninDtoReq signinDtoReq) {}
 
+    /*
+     * 이거 왜 만들어 놨지..?
+     */
     @PostMapping("/login")
     public void signin1(@Valid() @RequestBody(required = true) final SigninDto.SigninDtoReq signinDtoReq) {}
 

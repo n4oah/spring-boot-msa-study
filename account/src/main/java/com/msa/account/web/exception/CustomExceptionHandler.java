@@ -3,12 +3,11 @@ package com.msa.account.web.exception;
 import com.msa.account.exception.ExceptionCode;
 import com.msa.account.exception.ParentException;
 import io.jsonwebtoken.ExpiredJwtException;
-import jakarta.validation.ConstraintViolationException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.validation.ValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -28,7 +27,7 @@ public class CustomExceptionHandler {
 //    }
 
     @ExceptionHandler({ValidationException.class})
-    public ResponseEntity<WebExceptionData> validExceptionHandler(
+    public ResponseEntity<WebExceptionData> exceptionHandle(
             ValidationException ex) {
 
         WebExceptionData response = new WebExceptionData(
@@ -41,7 +40,7 @@ public class CustomExceptionHandler {
     }
 
     @ExceptionHandler({ExpiredJwtException.class})
-    public ResponseEntity<WebExceptionData> validExceptionHandler(
+    public ResponseEntity<WebExceptionData> exceptionHandle(
             ExpiredJwtException ex) {
 
         WebExceptionData response = new WebExceptionData(
@@ -53,8 +52,21 @@ public class CustomExceptionHandler {
         return new ResponseEntity<>(response, response.status());
     }
 
+    @ExceptionHandler({SignatureException.class})
+    public ResponseEntity<WebExceptionData> exceptionHandle(
+            SignatureException ex) {
+
+        WebExceptionData response = new WebExceptionData(
+                HttpStatusCode.valueOf(this.getHttpStatusByExceptionCode(ExceptionCode.JWT_AUTH_FAIL).value()),
+                "인증실패",
+                ExceptionCode.JWT_AUTH_FAIL
+        );
+
+        return new ResponseEntity<>(response, response.status());
+    }
+
     @ExceptionHandler({ParentException.class})
-    public ResponseEntity<WebExceptionData> customExceptionHandler(
+    public ResponseEntity<WebExceptionData> exceptionHandle(
             ParentException ex) {
 
         WebExceptionData response = new WebExceptionData(
@@ -70,7 +82,7 @@ public class CustomExceptionHandler {
         return switch (exceptionCode) {
             case DUPLICATION -> HttpStatus.CONFLICT;
             case VALIDATION_ERROR -> HttpStatus.BAD_REQUEST;
-            case EXPIRED_JWT ->  HttpStatus.UNAUTHORIZED;
+            case EXPIRED_JWT, JWT_AUTH_FAIL ->  HttpStatus.UNAUTHORIZED;
         };
     }
 }
