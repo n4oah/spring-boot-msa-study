@@ -22,7 +22,7 @@ public class CreateBookDto {
             @NotEmpty()
             String publisher,
             @NotNull()
-            @DateTimeFormat(pattern = "yyyy-mm-dd")
+            @DateTimeFormat(pattern = "yyyy-MM-dd")
             LocalDate publicationDate,
             @NotNull()
             BookClassification bookClassification

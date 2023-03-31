@@ -11,25 +11,10 @@ import lombok.RequiredArgsConstructor;
 import java.time.LocalDate;
 
 public class GetBookDetailDto {
-    @Getter
-    @RequiredArgsConstructor
-    public static class GetBookDetailResDto {
-        @NotNull
-        @Positive
-        private final Long bookId;
-        @NotNull
-        private final String title;
-        @NotNull
-        private final String author;
-        @NotNull
-        private final String description;
-        @NotNull
-        private final String publisher;
-        @JsonFormat(pattern = "yyyy-mm-dd")
-        private final LocalDate publicationDate;
-        @NotNull
-        private final BookClassification classification;
-
+    public record GetBookDetailResDto(@NotNull @Positive Long bookId, @NotNull String title, @NotNull String author,
+                                      @NotNull String description, @NotNull String publisher,
+                                      @JsonFormat(pattern = "yyyy-MM-dd") LocalDate publicationDate,
+                                      @NotNull BookClassification classification) {
         public static GetBookDetailResDto fromEntity(Book book) {
             return new GetBookDetailResDto(
                     book.getId(),
