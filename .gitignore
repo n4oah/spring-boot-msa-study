@@ -1,3 +1,2 @@
 .DS_Store
-postgresql-data/
-kafka_volumes/
+.docker-volume/

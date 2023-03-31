@@ -11,7 +11,7 @@ services:
       POSTGRES_USER: "root"
       POSTGRES_PASSWORD: "root"
     volumes:
-      - ~/workspace/spring-boot-msa-study/postgresql-data:/var/lib/postgresql/data
+      - ~/workspace/spring-boot-msa-study/.docker-volume/postgresql:/var/lib/postgresql/data
   zookeeper:
     image: wurstmeister/zookeeper
     container_name: zookeeper
@@ -25,5 +25,6 @@ services:
     environment:
       KAFKA_ADVERTISED_HOST_NAME: 127.0.0.1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPICS: book-topic:1:1
     volumes:
-      - ~/workspace/spring-boot-msa-study/kafka_volumes/docker.sock:/var/run/docker.sock
+      - ~/workspace/spring-boot-msa-study/.docker-volume/kafka/docker.sock:/var/run/docker.sock
