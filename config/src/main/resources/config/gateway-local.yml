@@ -2,13 +2,22 @@ spring:
   cloud:
     gateway:
       routes:
+        - id: book-admin-api
+          uri: lb://book
+          predicates:
+            - Method=POST
+            - Path=/book/, /book/stock
+          filters:
+            - name: AuthFilter
+              args:
+                role: Admin
+            - RewritePath=/book(?<segment>/?.*), $\{segment}
         - id: book
           uri: lb://book
           predicates:
             - Path=/book/**
           filters:
             - RewritePath=/book(?<segment>/?.*), $\{segment}
-            - AuthFilter
         - id: account-not-auth
           uri: lb://account
           predicates:
@@ -21,4 +30,11 @@ spring:
             - Path=/account/**
           filters:
             - RewritePath=/account(?<segment>/?.*), $\{segment}
-            - AuthFilter
+            - AuthFilter=User
+        - id: rental
+          uri: lb://rental
+          predicates:
+            - Path=/rental/**
+          filters:
+            - RewritePath=/rental(?<segment>/?.*), $\{segment}
+            - AuthFilter=User
