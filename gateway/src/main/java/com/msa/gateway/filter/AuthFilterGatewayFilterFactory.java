@@ -20,7 +20,6 @@ import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
-import java.util.List;
 
 @Component
 public class AuthFilterGatewayFilterFactory extends AbstractGatewayFilterFactory<AuthFilterGatewayFilterFactory.Config> {
@@ -36,8 +35,6 @@ public class AuthFilterGatewayFilterFactory extends AbstractGatewayFilterFactory
     @Override
     public GatewayFilter apply(Config config) {
         return ((exchange, chain) -> {
-            System.out.println("config" + config.getRole());
-
             ServerHttpRequest request = exchange.getRequest();
             ServerHttpResponse response = exchange.getResponse();
 
