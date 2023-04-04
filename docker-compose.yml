@@ -18,6 +18,8 @@ services:
     ports:
       - "2181:2181"
   kafka:
+    depends_on:
+      - zookeeper
     image: wurstmeister/kafka:2.12-2.5.0
     container_name: kafka
     ports:
@@ -25,6 +27,7 @@ services:
     environment:
       KAFKA_ADVERTISED_HOST_NAME: 127.0.0.1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_CREATE_TOPICS: book-topic:1:1
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_CREATE_TOPICS: book-service.modify-stock-book:1:1
     volumes:
       - ~/workspace/spring-boot-msa-study/.docker-volume/kafka/docker.sock:/var/run/docker.sock
