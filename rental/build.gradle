@@ -25,6 +25,7 @@ dependencies {
 	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '4.0.0'
 	implementation group: 'io.github.resilience4j', name: 'resilience4j-spring-boot2', version: '2.0.2'
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: '3.0.2'
+	implementation group: 'org.springframework.kafka', name: 'spring-kafka', version: '3.0.2'
 
 	compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.26'
 	annotationProcessor 'org.projectlombok:lombok'

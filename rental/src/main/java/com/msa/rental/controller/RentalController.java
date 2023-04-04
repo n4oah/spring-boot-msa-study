@@ -19,7 +19,6 @@ public class RentalController {
         @RequestHeader("X-auth-account-id") Long accountId,
         @Valid @RequestBody CreateRentalBookDto.CreateRentalBookReqDto createRentalBookReqDto
     ) {
-        System.out.println("accountId" + accountId + "zz" + createRentalBookReqDto.stockBookId() );
         this.rentalService.createRentalBook(accountId, createRentalBookReqDto);
     }
 }
