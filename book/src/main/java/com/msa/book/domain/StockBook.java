@@ -32,4 +32,24 @@ public class StockBook extends AbstractAuditingEntity {
         this.libraryLocation = libraryLocation;
         this.status = status;
     }
+
+    public void rentStockBook() {
+        if (this.status == BookStatus.Rent) {
+            throw new RuntimeException("빌릴 수 없는 책입니다.");
+        }
+
+        this.status = BookStatus.Rent;
+    }
+
+    public void returnStockBook() {
+        if (this.status == BookStatus.Available) {
+            throw new RuntimeException("이미 반납된 책 입니다.");
+        }
+
+        this.status = BookStatus.Available;
+    }
+
+    public void setLibraryLocation(BookLibraryLocation libraryLocation) {
+        this.libraryLocation = libraryLocation;
+    }
 }
